@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private TextMeshProUGUI infoText;
+    [SerializeField] private TextMeshProUGUI modeText;
     [SerializeField] private Button restartButton;
     [SerializeField] GameObject titleScreen;
 
@@ -27,9 +28,15 @@ public class GameManager : MonoBehaviour
     public int difficulty;
 
 
-    public void StartGame(int difficult)
+    public void StartGame(int difficult , string mode)
     {
+        //Setting StartGame 
+        //Includes difficulty, round time, AI bot, default score
+        //Start countdown time
+        //Spawn ball
+        //Hide title Screen
         this.difficulty = difficult;
+        modeText.text ="Mode : "+ mode;
         timer = timeRound;
         isGameActive = true;
         botSpawnBall.transform.parent.GetComponent<BotController>().SetBotDifficulty(difficulty);
@@ -42,13 +49,10 @@ public class GameManager : MonoBehaviour
         titleScreen.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     IEnumerator CountDown()
     {
+        //Count down the round time
+        //Time to 0 ends the game
         while (timer > 0)
         {
             yield return new WaitForSeconds(1f);
@@ -60,6 +64,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator SpawnBallAfter()
     {
+        //Spawn ball after 2 seconds
+        //Spawn position alternates between Player and Bot
         yield return new WaitForSeconds(2f);
 
         infoText.gameObject.SetActive(false);
@@ -72,13 +78,16 @@ public class GameManager : MonoBehaviour
 
     void SetTimerText()
     {
+        //Set timer text
         timerText.text = "Time : " + timer;
     }
 
     public void AddPlayerScore(int score)
     {
-
-        playerScore+=score;
+        //Add points for Player
+        //Change Spawn location
+        //Show text Player scores
+        playerScore += score;
         playerText.text = "Player : " + playerScore;
         playerTurn = !playerTurn;
         infoText.gameObject.SetActive(true);
@@ -87,6 +96,9 @@ public class GameManager : MonoBehaviour
     }
     public void AddBotScore(int score)
     {
+        //Add points for Bot
+        //Change Spawn location
+        //Show text Bot scores
         botScore += score;
         botText.text = "Bot : " + botScore;
         playerTurn = !playerTurn;
@@ -97,12 +109,16 @@ public class GameManager : MonoBehaviour
 
     public void SpawnBall()
     {
+        //Spawn ball if Game not end
         if (!isGameActive) return;
         StartCoroutine(SpawnBallAfter());
     }
 
     public void GameOver()
     {
+        //Game over
+        //Show match result
+        //Show the replay button
         infoText.gameObject.SetActive(false);
         gameOverText.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
@@ -115,6 +131,7 @@ public class GameManager : MonoBehaviour
     // Restart game by reloading the scene
     public void RestartGame()
     {
+        //Reload Scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

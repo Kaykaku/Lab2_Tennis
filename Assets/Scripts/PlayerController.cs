@@ -32,11 +32,14 @@ public class PlayerController : MonoBehaviour
         Hit();
     }
 
+    //move player with key
     void PlayerMovement() {
+        //Get the value from the keyboard
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 pos = playerModel.transform.position + new Vector3(horizontalInput, 0, verticalInput) * speed * Time.deltaTime;
 
+        //Prevent players from leaving their area
         if (Mathf.Abs(pos[0]) > xRange) pos[0] = pos[0] > 0 ? xRange : -xRange;
         if (pos[2] > zMaxPos) pos[2] = zMaxPos;
         if (pos[2] < ZMinPos) pos[2] = ZMinPos;
@@ -44,6 +47,7 @@ public class PlayerController : MonoBehaviour
         transform.position = pos;
     }
 
+    //Change the direction of the ball and the direction of the player in the direction of the mouse
     void LookAtMousePosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -57,15 +61,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Charge force when holding left mouse
     void Hit()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && forceCounter == 0)
         {
-            if (forceCounter != 0) return;
             StartCoroutine(ChangeForce());
         }
     }
 
+    //Return the direction of the Player's ball
     public Vector3 PlayerDirection()
     {
         Vector3 dir = playerDirection;
@@ -73,11 +78,16 @@ public class PlayerController : MonoBehaviour
         return dir;
     }
 
+    //Returns Player's hitting power
     public float PlayerHitForce()
     {
         return forceCounter*0.1f*forceMax;
     }
 
+    //Charge force every 0.05s when hold left mouse button
+    //Force increases to max and decreases to 0 overtime
+    //Force is held for 1s after releasing the mouse and returns to 0 afterwards
+    //Show Force slider when change and hide when releasing after 1s
     IEnumerator ChangeForce()
     {
         slider.gameObject.SetActive(true);

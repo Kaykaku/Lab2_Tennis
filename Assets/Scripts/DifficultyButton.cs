@@ -18,11 +18,9 @@ public class DifficultyButton : MonoBehaviour
         button.onClick.AddListener(SetDifficulty);
     }
 
-    /* When a button is clicked, call the StartGame() method
-        * and pass it the difficulty value (1, 2, 3) from the button 
-    */
+    //Set Difficulty for game before game start
     void SetDifficulty()
     {
-        gameManager.StartGame(difficulty);
+        gameManager.StartGame(difficulty,button.GetComponentInChildren<Text>().text);
     }
 }
