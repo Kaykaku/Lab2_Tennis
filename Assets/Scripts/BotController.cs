@@ -20,16 +20,27 @@ public class BotController : MonoBehaviour
         FollowBall();
     }
 
-    //Bot will move according to the ball position
+    //Bot will move to the point where the ball hits the ground when the ball passes the Bot's area
+    //Bot will return to the middle of the field when the ball is in the player area
+    //Bot only moves within Bot's limited area
     void FollowBall()
     {
-        if (ball.transform.position.z < 0) return;
-        Vector3 wantedPosition = new Vector3(ball.transform.position.x, transform.position.y, transform.position.z);
+        Vector3 wantedPosition;
+        if (ball.transform.position.z > 0)
+        {
+            Vector3 ballHitGround = ball.GetComponent<BallBehaviour>().GetPosHitGround();
+            wantedPosition = new Vector3(ballHitGround.x, transform.position.y, ballHitGround.z);
+        }
+        else
+        {
+            wantedPosition = new Vector3(0, 2f, 12f);
+        }
+        
         if (wantedPosition[2] > zMaxPos) wantedPosition[2] = zMaxPos;
         else if (wantedPosition[2] < ZMinPos) wantedPosition[2] = ZMinPos;
         if (wantedPosition[0] > xRange) wantedPosition[0] = xRange;
         else if (wantedPosition[0] < -xRange) wantedPosition[0] = -xRange;
-        transform.position = Vector3.MoveTowards(transform.position, wantedPosition, Time.deltaTime * followSpeed+0.1f);
+        transform.position = Vector3.MoveTowards(transform.position, wantedPosition, Time.deltaTime * followSpeed);
     }
     //Return the direction of the Bot's ball
     public Vector3 BotDirection()
@@ -48,10 +59,9 @@ public class BotController : MonoBehaviour
     //Set the parameters of the BOT according to the difficulty
     public void SetBotDifficulty(int difficulty)
     {
-        xRange += difficulty;
-        minForce -= difficulty;
-        maxForce += difficulty;
-        isFreeMovement = difficulty == 0;
-        followSpeed -= difficulty;
+        xRange += xRange*difficulty * 0.1f;
+        minForce -= minForce * difficulty * 0.1f;
+        maxForce += maxForce * difficulty * 0.1f;
+        followSpeed -= followSpeed * difficulty * 0.2f;
     }
 }

@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ball: {fileID: 0}
-  followSpeed: 1
+  followSpeed: 10
   xRange: 9
   zMaxPos: 11
   ZMinPos: 0.5
@@ -682,7 +682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9563c3387ff9b9549980d7eb229fb132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  difficulty: 2
+  difficulty: 1
 --- !u!1 &261132330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3115,7 +3115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9563c3387ff9b9549980d7eb229fb132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  difficulty: 4
+  difficulty: 2
 --- !u!114 &1310702601 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3209174639758679790, guid: 345d71e0c5617c44a819d55fba1f09c5, type: 3}

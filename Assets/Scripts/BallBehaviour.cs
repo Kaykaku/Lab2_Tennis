@@ -29,13 +29,13 @@ public class BallBehaviour : MonoBehaviour
     void Start()
     {
         startPos = transform.position;
-        direction = new Vector3(0, 2f, transform.position.z > 0 ? -4:4) ;
+        direction = new Vector3(0, 2f, transform.position.z > 0 ? -4.5f:4.5f) ;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         botController = GameObject.Find("Bot").GetComponent<BotController>();
         calculatorScore = GetComponent<CalculatorScore>();
         botController.ball = gameObject;
-        speed -= gameManager.difficulty * 0.1f * speed;
+        speed -= gameManager.difficulty * 0.2f * speed;
     }
     // Update is called once per frame
     void Update()
@@ -60,6 +60,7 @@ public class BallBehaviour : MonoBehaviour
         Vector3 nextPos = CalculatorPositionByTime((time + Time.deltaTime) * speed);
         float distance = Vector3.Distance(currentPos, nextPos) + radius;
         Ray ray = new Ray(transform.position, transform.TransformDirection((nextPos - transform.position)));
+        Debug.DrawRay(transform.position, transform.TransformDirection((nextPos - transform.position)));
         isCollision = Physics.Raycast(ray, out hit, distance);
     }
 
@@ -117,9 +118,20 @@ public class BallBehaviour : MonoBehaviour
         if( transform.position.z > zRange
             || transform.position.z < -zRange
             || transform.position.x > xRange
-            || transform.position.x < -xRange || groundCollision>0)
+            || transform.position.x < -xRange || isCollision)
         {
             isCheck = calculatorScore.CheckPoint(transform.position , isPlayerHit , groundCollision);
+        }
+    }
+    //Calculate where the ball hits the ground
+    public Vector3 GetPosHitGround()
+    {
+        float t = 0;
+        while (true)
+        {
+            Vector3 pos = CalculatorPositionByTime(t);
+            t += Time.deltaTime;
+            if (pos.y <= 0) return pos;
         }
     }
 }
