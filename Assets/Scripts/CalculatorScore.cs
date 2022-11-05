@@ -16,6 +16,19 @@ public class CalculatorScore : MonoBehaviour
 
     public bool CheckPoint(Vector3 pos , bool isPlayerHit , int groundedCount)
     {
+        if (gameManager.hasWall)
+        {
+            if (groundedCount > 1 )
+            {
+                AddPlayerPoint(false);
+                return true;
+            }else if (IsTouchWallBack(pos))
+            {
+                AddPlayerPoint(false);
+                return true;
+            }
+            return false;
+        }
         //Add points when the opponent hits the ball off the field with 0 hits to the ground
         if (groundedCount == 0 && !IsInZone(pos))
         {
@@ -73,6 +86,12 @@ public class CalculatorScore : MonoBehaviour
             && pos.z >= - ballBehaviour.zRange
             && pos.x <= ballBehaviour.xRange
             && pos.x >= - ballBehaviour.xRange;
+    }
+
+    //Check if the position is in the competition  area
+    bool IsTouchWallBack(Vector3 pos)
+    {
+        return pos.z < -15f;
     }
 
     //Add points for players or bots

@@ -16,19 +16,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI modeText;
     [SerializeField] private Button restartButton;
     [SerializeField] GameObject titleScreen;
+    [SerializeField] GameObject[] walls;
 
     private int timer;
     private int playerScore;
     private int botScore;
-    public bool playerTurn=false;
+    public bool playerTurn;
     public GameObject ballPrefab;
     public GameObject botSpawnBall;
     public GameObject playerSpawnBall;
     public bool isGameActive;
+    public bool hasWall;
     public int difficulty;
 
 
-    public void StartGame(int difficult , string mode)
+    public void StartGame(int difficult , string mode, bool hasWall)
     {
         //Setting StartGame 
         //Includes difficulty, round time, AI bot, default score
@@ -36,17 +38,22 @@ public class GameManager : MonoBehaviour
         //Spawn ball
         //Hide title Screen
         this.difficulty = difficult;
-        modeText.text ="Mode : "+ mode;
+        this.hasWall = hasWall;
+        this.playerTurn = hasWall;
         timer = timeRound;
         isGameActive = true;
+        modeText.text = "Mode : " + mode;
+
         botSpawnBall.transform.parent.GetComponent<BotController>().SetBotDifficulty(difficulty);
         AddPlayerScore(0);
         AddBotScore(0);
-        infoText.gameObject.SetActive(false);
         SetTimerText();
         SpawnBall();
         StartCoroutine(CountDown());
+        ShowWall();
+
         titleScreen.SetActive(false);
+        infoText.gameObject.SetActive(false);
     }
 
     IEnumerator CountDown()
@@ -75,6 +82,18 @@ public class GameManager : MonoBehaviour
         Instantiate(ballPrefab, pos, ballPrefab.transform.rotation);
     }
 
+    void ShowWall()
+    {
+        if (!hasWall) return;
+        foreach (GameObject o in walls)
+        {
+            o.SetActive(!o.activeSelf);
+        }
+        Camera.main.transform.position = new Vector3(0,18f,-15f);
+        PlayerController playerController = playerSpawnBall.transform.parent.GetComponent<PlayerController>();
+        playerController.xRange =13f;
+        playerController.ZMinPos = -15f;
+    }
 
     void SetTimerText()
     {
@@ -89,7 +108,7 @@ public class GameManager : MonoBehaviour
         //Show text Player scores
         playerScore += score;
         playerText.text = "Player : " + playerScore;
-        playerTurn = !playerTurn;
+        if(!hasWall) playerTurn = !playerTurn;
         infoText.gameObject.SetActive(true);
         infoText.text = "Player Score";
         infoText.color = Color.blue;
@@ -101,7 +120,7 @@ public class GameManager : MonoBehaviour
         //Show text Bot scores
         botScore += score;
         botText.text = "Bot : " + botScore;
-        playerTurn = !playerTurn;
+        if (!hasWall) playerTurn = !playerTurn;
         infoText.gameObject.SetActive(true);
         infoText.text = "Bot Score";
         infoText.color = Color.red;

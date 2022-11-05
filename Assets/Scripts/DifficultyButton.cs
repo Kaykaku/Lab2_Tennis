@@ -9,6 +9,7 @@ public class DifficultyButton : MonoBehaviour
     private Button button;
     private GameManager gameManager;
     public int difficulty;
+    public bool isWall;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,6 @@ public class DifficultyButton : MonoBehaviour
     //Set Difficulty for game before game start
     void SetDifficulty()
     {
-        gameManager.StartGame(difficulty,button.GetComponentInChildren<Text>().text);
+        gameManager.StartGame(difficulty,button.GetComponentInChildren<Text>().text,isWall);
     }
 }
